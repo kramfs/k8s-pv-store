@@ -1,0 +1,15 @@
+# sc-nfs.yaml
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ${nfs-storageclass-name}
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: 192.168.1.10
+  share: /volume2/Data/Kubernetes/nfs_volume_data_miniws
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - hard
+  - nfsvers=4.0

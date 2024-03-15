@@ -1,0 +1,17 @@
+## WORDPRESS ##
+wordpressUsername: user
+wordpressPassword: ${wp-password}
+
+persistence:
+  #storageClass: nfs-csi
+  storageClass: ${storageClass}
+
+## DATABASE ##
+mariadb:
+  primary:
+    persistence:
+      storageClass: ${storageClass}
+
+## MEMCACHED
+memcached:
+  enabled: ${memcached_enabled}

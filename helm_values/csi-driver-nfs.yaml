@@ -1,0 +1,19 @@
+# REF: https://github.com/kubernetes-csi/csi-driver-nfs/tree/master/charts#latest-chart-configuration
+
+driver: {}
+
+feature: {}
+
+#kubeletdir:
+
+image: {}
+
+serviceAccount: {}
+
+rbac: {}
+
+controller: {}
+
+node: {}
+
+externalSnapshotter: {}

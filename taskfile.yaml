@@ -1,0 +1,50 @@
+version: '3'
+
+env: # global scope
+  TF_AUTO: --auto-approve
+  KUBE_GET: kubectl get all
+
+tasks:
+  default:
+    desc: "Show this task list"
+    cmds:
+      - task --list-all
+
+  init:
+    internal: true
+    dir: ""
+    cmds:
+      - terraform init -upgrade
+
+  plan:
+    internal: true
+    cmds:
+      - terraform plan $TF_AUTO
+
+  apply:
+    internal: true
+    dir: ""
+    cmds:
+      - terraform apply $TF_AUTO
+
+  destroy:
+    desc: "Reset the app, perform Terraform destroy"
+    internal: true
+    dir: ""
+    cmds:
+      - terraform destroy $TF_AUTO
+
+  up:
+    desc: "Bring up the cluster"
+    dir: ""
+    cmds:
+      - task: init
+      - task: apply
+      #- kubectl apply -f ../control-app.yaml
+
+  cleanup:
+    desc: "Destroy and clean up the cluster"
+    #dir: ""
+    cmds:
+      - task: destroy
+      - find . -name '*terraform*' -print | xargs rm -Rf
