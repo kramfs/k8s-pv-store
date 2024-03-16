@@ -1,6 +1,6 @@
 # Usage
 
-## SUMMARY OF STEPS TO BE DONE (AUTOMATED by TF)
+## Steps Summary
 
 - Bring up the cluster
 - Install the csi-driver-nfs
@@ -19,6 +19,8 @@
 - Install MetalLB to handout Load Balancer IP when using minikube
 - To test the PV and PVC provisioning, we install Wordpress using Bitnami's Helm [installer](https://artifacthub.io/packages/helm/bitnami/wordpress)
 
+ Note: The above will be done with Terraform
+
 ## TASK UP
 To bring up the cluster:
 ```
@@ -27,7 +29,7 @@ task up
 
 Example:
 ```
-❯ t up
+❯ task up
 task: [init] terraform init -upgrade
 
 Initializing the backend...
@@ -79,7 +81,7 @@ task cleanup
 Example:
 
 ```
-❯ t cleanup
+❯ task cleanup
 task: [destroy] terraform destroy $TF_AUTO
 random_string.wp-password: Refreshing state... [id=JRi33652wGWDbiYj]
 local_file.sc-nfs: Refreshing state... [id=453b196645508304236c4e213cffb17540f9409d]
