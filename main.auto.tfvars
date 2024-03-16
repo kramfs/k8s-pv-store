@@ -33,7 +33,7 @@ csi-driver-nfs = {
   chart             = "csi-driver-nfs"
   #version          = "4.6.0"           # Chart version
   #serviceMonitor_enabled = false
-  nfs-storageclass-name      = "nfs-csi"
+  nfs-storageclass-name      = "nfs-csi-custom"
 }
 
 

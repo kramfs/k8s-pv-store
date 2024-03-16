@@ -62,7 +62,7 @@ resource "helm_release" "metallb" {
   #]
 
   provisioner "local-exec" {
-    command = "kubectl apply -f ./helm_values/metallb-system-config.yaml"
+    command = "kubectl apply -f ${path.module}/helm_values/metallb-system-config.yaml"
   }
 
   #depends_on = [ helm_release.prometheus-stack ]
@@ -73,7 +73,9 @@ resource "helm_release" "metallb" {
 # REF: https://github.com/kubernetes-csi/csi-driver-nfs/tree/master/charts
 resource "local_file" "sc-nfs" {
   content = templatefile("${path.module}/deploy/nfs/sc-nfs.yaml", {
-    nfs-storageclass-name = var.csi-driver-nfs.nfs-storageclass-name
+    #nfs-storageclass-name = var.csi-driver-nfs.nfs-storageclass-name
+    #nfs-storageclass-name = ${ nfs-storageclass-name != null ? nfs-storageclass-name : "nfs-csi" }
+    nfs-storageclass-name = "${coalesce(var.csi-driver-nfs.nfs-storageclass-name, "nfs-csi")}"
   })
   filename = "${path.module}/deploy/nfs/sc-nfs-generated.yaml"
 }
@@ -126,7 +128,7 @@ resource "helm_release" "wordpress" {
       #serviceMonitor_enabled = lookup(var.wordpress, "serviceMonitor_enabled", false) # Check if servicemonitor will be enabled
       wp-password = random_string.wp-password.result
       memcached_enabled = lookup(var.wordpress, "memcached_enabled", false) # Check if memcached will be enabled
-      storageClass = lookup(var.csi-driver-nfs, "nfs-storageclass-name", null) # Check if memcached will be enabled
+      storageClass = lookup(var.csi-driver-nfs, "nfs-storageclass-name", "nfs-csi")
     })
   ]
 
