@@ -34,13 +34,24 @@ tasks:
     cmds:
       - terraform destroy $TF_AUTO
 
+  wordpress-ip:
+    desc: "Show Wordpress IP"
+    internal: false
+    silent: true
+    preconditions:
+      # Fail when the k8s cluster is not running
+      #- kubectl get all
+      - $KUBE_GET
+    cmds:
+      - echo "To view the ArgoCD UI, open https://"$(kubectl get svc wordpress -n wordpress -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
   up:
     desc: "Bring up the cluster"
     dir: ""
     cmds:
       - task: init
       - task: apply
-      #- kubectl apply -f ../control-app.yaml
+      - task: wordpress-ip
 
   cleanup:
     desc: "Destroy and clean up the cluster"
