@@ -16,4 +16,4 @@ volumeBindingMode: Immediate      # Immediate, WaitForFirstConsumer
 mountOptions:
   - hard
   - nfsvers=4.0
-#allowVolumeExpansion: true
+allowVolumeExpansion: true
