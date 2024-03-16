@@ -132,3 +132,6 @@ Temporary Items
 *.swp
 *.log
 *.bak
+
+# Ignore generated files
+*generated
