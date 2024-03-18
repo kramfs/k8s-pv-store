@@ -71,14 +71,14 @@ resource "helm_release" "metallb" {
 
 # CSI-DRIVER-NFS
 # REF: https://github.com/kubernetes-csi/csi-driver-nfs/tree/master/charts
-resource "local_file" "sc-nfs" {
-  content = templatefile("${path.module}/deploy/nfs/sc-nfs.yaml", {
-    #nfs-storageclass-name = var.csi-driver-nfs.nfs-storageclass-name
-    #nfs-storageclass-name = ${ nfs-storageclass-name != null ? nfs-storageclass-name : "nfs-csi" }
-    nfs-storageclass-name = "${coalesce(var.csi-driver-nfs.nfs-storageclass-name, "nfs-csi")}"
-  })
-  filename = "${path.module}/deploy/nfs/sc-nfs-generated.yaml"
-}
+#resource "local_file" "sc-nfs" {
+#  content = templatefile("${path.module}/deploy/nfs/sc-nfs.yaml", {
+#    #nfs-storageclass-name = var.csi-driver-nfs.nfs-storageclass-name
+#    #nfs-storageclass-name = ${ nfs-storageclass-name != null ? nfs-storageclass-name : "nfs-csi" }
+#    nfs-storageclass-name = "${coalesce(var.csi-driver-nfs.nfs-storageclass-name, "nfs-csi")}"
+#  })
+#  filename = "${path.module}/deploy/nfs/sc-nfs-generated.yaml"
+#}
 
 resource "helm_release" "csi-driver-nfs" {
   count             = var.csi-driver-nfs.install ? 1 : 0
@@ -96,11 +96,32 @@ resource "helm_release" "csi-driver-nfs" {
   #  })
   #]
 
-  provisioner "local-exec" {
-    command = "kubectl apply -f ${path.module}/deploy/nfs/sc-nfs-generated.yaml"
-  }
+  #provisioner "local-exec" {
+  #  command = "kubectl apply -f ${path.module}/deploy/nfs/sc-nfs-generated.yaml"
+  #}
 
-  depends_on = [ local_file.sc-nfs ]
+  #depends_on = [ local_file.sc-nfs ]
+}
+
+# STORAGE CLASS
+resource "kubernetes_storage_class" "nfs-csi" {
+  count             = var.csi-driver-nfs.install ? 1 : 0
+  metadata {
+    name = lookup(var.csi-driver-nfs, "nfs-storageclass-name", "nfs-csi")
+  }
+  storage_provisioner = "nfs.csi.k8s.io"
+  reclaim_policy      = "Delete"
+  parameters = {
+    #type = "pd-standard"
+    server =  "192.168.1.10"
+    share: "/volume2/Data/Kubernetes/nfs_volume_data_miniws"
+    }
+  mount_options = [
+    "hard",
+    "nfsvers=4.0"
+    ]
+  volume_binding_mode = "Immediate"
+  allow_volume_expansion = true
 }
 
 
